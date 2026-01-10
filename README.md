@@ -37,7 +37,7 @@ Con 1GB de RAM, el proceso de construcción de la imagen de Docker con Chromium 
 Se utiliza un enfoque de repositorio único para gestionar la infraestructura con `docker-compose.yml`.
 
 * **Servicio A: Memos (Self-Hosted Notes)**
-    * Alternativa open-source a Notion.
+    * [Memos](https://github.com/usememos/memos): Alternativa open-source a Notion, ligera y potente.
     * Expuesto directamente al puerto 80 para acceso web mediante IP pública.
     * Datos persistentes en volumen de Docker.
 
