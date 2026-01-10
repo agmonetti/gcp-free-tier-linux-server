@@ -52,7 +52,7 @@ El despliegue fue exitoso. El servidor opera 24/7 de manera estable, manejando l
 
 **Evidencia: Proceso de construcción y despliegue exitoso (Tiempo de build: +19 minutos)**
 
-![Build Exitoso](./imgs/build.jpg)
+![Build Exitoso](./imgs/build.png)
 
 ---
 *Este repositorio documenta la infraestructura. El código fuente de los servicios se mantiene en repositorios privados.*
