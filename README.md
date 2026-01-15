@@ -8,7 +8,7 @@ El objetivo era desplegar un entorno de servidor propio en la nube para alojar p
 
 El reto técnico principal fue ejecutar un **bot de Python que utiliza Selenium (Chromium Headless)**. Chromium es conocido por su alto consumo de memoria, y la instancia gratuita de GCP (`e2-micro`) solo ofrece **1 GB de RAM**, lo cual es insuficiente para esta tarea por defecto.
 
-## 🏗️ Solución
+## Resolución
 
 Se diseñó una arquitectura basada en **microservicios contenerizados** sobre una máquina virtual Linux altamente optimizada.
 
@@ -22,7 +22,7 @@ Se diseñó una arquitectura basada en **microservicios contenerizados** sobre u
 | **Almacenamiento** | Persistent Disk (30GB) | Maximización del almacenamiento gratuito permitido. |
 | **Red** | VPC Firewall | Reglas estrictas permitiendo solo tráfico HTTP (80) y SSH (22). |
 
-## 🛠️ Optimizaciones
+## Optimizaciones
 
 Para hacer viable este entorno con recursos tan limitados, se aplicaron técnicas de ingeniería de sistemas:
 
