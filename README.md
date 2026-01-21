@@ -60,7 +60,7 @@ El despliegue fue exitoso. El servidor opera 24/7 de manera estable, manejando l
 
 ![Build Exitoso](./imgs/build.png)
 
-**Dashboard de Monitoreo: Se desarrolló e implementó un dashboard para visualizar en tiempo real el consumo de recursos (CPU, RAM, Disco) y el estado de los contenedores.**
+**Dashboard de Monitoreo**: Se desarrolló e implementó un dashboard para visualizar en tiempo real el consumo de recursos (CPU, RAM, Disco) y el estado de los contenedores.
 
 ![Dashboard](./imgs/dashboard.png)
 
