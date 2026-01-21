@@ -47,8 +47,8 @@ Se utiliza un enfoque mixto para maximizar la eficiencia:
     * **Optimización de Logs:** Se configuró la rotación de logs de Docker (`max-size: "10m"`, `max-file: "3"`) para evitar que la salida de Selenium llene el disco de 30GB con el tiempo.
 
 * **Servicio C: Web de Monitoreo**
-    * **Stack:** Node.js + Express + Systeminformation.
-    * **Estrategia "Bare Metal":** A diferencia de los otros servicios, este agente corre nativamente (sin Docker) gestionado por **PM2**.
+    * **Stack:** Node.js + Express.
+    * **Estrategia:** A diferencia de los otros servicios, este agente corre sin Docker gestionado por **PM2**.
     * **Motivo:** Evitar el *overhead* de memoria de un contenedor adicional y facilitar la lectura directa de métricas del Kernel y del socket de Docker.
 
 ## Resultados
