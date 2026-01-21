@@ -10,7 +10,7 @@ El reto técnico principal fue ejecutar un **bot de Python que utiliza Selenium 
 
 ## Resolución
 
-Se diseñó una arquitectura basada en **microservicios contenerizados** sobre una máquina virtual Linux altamente optimizada.
+Se diseñó una arquitectura híbrida (Docker + Native Node.js) sobre una máquina virtual Linux altamente optimizada.
 
 ### Componentes Clave
 
@@ -18,41 +18,52 @@ Se diseñó una arquitectura basada en **microservicios contenerizados** sobre u
 | :--- | :--- | :--- |
 | **Cloud Provider** | GCP Compute Engine | Uso de la instancia `e2-micro` elegible para el Free Tier en `us-central1`. |
 | **OS** | Debian 12 (Bookworm) | Menor consumo de recursos base comparado con Ubuntu. |
-| **Orquestación** | Docker & Docker Compose | Aislamiento de servicios, gestión de dependencias y reinicio automático (`restart: unless-stopped`). |
+| **Orquestación** | Docker & PM2 | Docker para aislar aplicaciones y PM2 para servicios de sistema (Dashboard). |
 | **Almacenamiento** | Persistent Disk (30GB) | Maximización del almacenamiento gratuito permitido. |
-| **Red** | VPC Firewall | Reglas estrictas permitiendo solo tráfico HTTP (80) y SSH (22). |
+| **Seguridad** | VPC Firewall + SSH Tunnel | Puertos cerrados por defecto. El acceso al monitoreo es exclusivo vía túnel encriptado. |
 
 ## Optimizaciones
 
 Para hacer viable este entorno con recursos tan limitados, se aplicaron técnicas de ingeniería de sistemas:
 
-### 1. Gestión de Memoria (The "Swap Trick")
+### 1. Gestión de Memoria
 Con 1GB de RAM, el proceso de construcción de la imagen de Docker con Chromium fallaba por *Out Of Memory (OOM)*.
 
 * **Solución:** Se implementó un archivo de intercambio (**Swap File**) de **2 GB** en el disco persistente.
 * **Ajuste:** Se configuró `vm.swappiness=10` en el kernel para priorizar el uso de la RAM real y usar el disco solo cuando sea absolutamente necesario, evitando la degradación excesiva del rendimiento.
 
-### 2. Servicios Desplegados en el "Monorepo"
+## Servicios Desplegados
 
-Se utiliza un enfoque de repositorio único para gestionar la infraestructura con `docker-compose.yml`.
+Se utiliza un enfoque mixto para maximizar la eficiencia:
 
-* **Servicio A: Memos (Self-Hosted Notes)**
+* **Servicio A: Memos**
     * [Memos](https://github.com/usememos/memos): Alternativa open-source a Notion, ligera y potente.
     * Expuesto directamente al puerto 80 para acceso web mediante IP pública.
     * Datos persistentes en volumen de Docker.
 
-* **Servicio B: Subte Alerta Bot (Worker)**
+* **Servicio B: Subte Alerta Bot**
     * Bot de Python que monitorea el estado del subte de Buenos Aires vía web scraping (Selenium) y notifica por Telegram.
     * Se ejecuta en segundo plano (headless) sin exponer puertos.
     * **Optimización de Logs:** Se configuró la rotación de logs de Docker (`max-size: "10m"`, `max-file: "3"`) para evitar que la salida de Selenium llene el disco de 30GB con el tiempo.
+
+* **Servicio C: Web de Monitoreo**
+    * **Stack:** Node.js + Express + Systeminformation.
+    * **Estrategia "Bare Metal":** A diferencia de los otros servicios, este agente corre nativamente (sin Docker) gestionado por **PM2**.
+    * **Motivo:** Evitar el *overhead* de memoria de un contenedor adicional y facilitar la lectura directa de métricas del Kernel y del socket de Docker.
 
 ## Resultados
 
 El despliegue fue exitoso. El servidor opera 24/7 de manera estable, manejando la carga de trabajo de compilación de Selenium gracias a la gestión de memoria virtual.
 
+
 **Evidencia: Proceso de construcción y despliegue exitoso (Tiempo de build: +19 minutos)**
 
 ![Build Exitoso](./imgs/build.png)
 
+**Dashboard de Monitoreo: Se desarrolló e implementó un dashboard para visualizar en tiempo real el consumo de recursos (CPU, RAM, Disco) y el estado de los contenedores.**
+
+![Dashboard](./imgs/dashboard.png)
+
+> **Nota:** Este dashboard no está expuesto a internet. Se accede únicamente mediante un **Túnel SSH**, garantizando que la infraestructura permanezca segura.
 ---
 *Este repositorio documenta la infraestructura. El código fuente de los servicios se mantiene en repositorios privados.*
