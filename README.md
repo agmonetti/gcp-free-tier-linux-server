@@ -36,10 +36,6 @@ Con 1GB de RAM, el proceso de construcción de la imagen de Docker con Chromium 
 
 Se utiliza un enfoque mixto para maximizar la eficiencia:
 
-## Servicios Desplegados
-
-Se utiliza un enfoque mixto para maximizar la eficiencia:
-
 * **Servicio A: Landing Page (Portfolio)**
     * **Stack:** React 19 + Vite + TailwindCSS.
     * **Despliegue:** Estrategia **Docker Multi-stage**. Se utiliza una imagen de Node.js temporal para compilar el proyecto (aprovechando el Swap) y una imagen final de **Nginx Alpine** para servir los estáticos con mínimo consumo de RAM (<10MB).
