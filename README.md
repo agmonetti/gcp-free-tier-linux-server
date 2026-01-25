@@ -36,21 +36,29 @@ Con 1GB de RAM, el proceso de construcción de la imagen de Docker con Chromium 
 
 Se utiliza un enfoque mixto para maximizar la eficiencia:
 
-* **Servicio A: Memos**
+## Servicios Desplegados
+
+Se utiliza un enfoque mixto para maximizar la eficiencia:
+
+* **Servicio A: Landing Page (Portfolio)**
+    * **Stack:** React 19 + Vite + TailwindCSS.
+    * **Despliegue:** Estrategia **Docker Multi-stage**. Se utiliza una imagen de Node.js temporal para compilar el proyecto (aprovechando el Swap) y una imagen final de **Nginx Alpine** para servir los estáticos con mínimo consumo de RAM (<10MB).
+    * **Red:** Expuesto en el **puerto 80** asociado al dominio `is-a.dev`.
+
+* **Servicio B: Memos**
     * [Memos](https://github.com/usememos/memos): Alternativa open-source a Notion, ligera y potente.
-    * Expuesto directamente al puerto 80 para acceso web mediante IP pública.
+    * Expuesto al **puerto 8080** (migrado para liberar el puerto principal).
     * Datos persistentes en volumen de Docker.
 
-* **Servicio B: Subte Alerta Bot**
+* **Servicio C: Subte Alerta Bot**
     * Bot de Python que monitorea el estado del subte de Buenos Aires vía web scraping (Selenium) y notifica por Telegram.
     * Se ejecuta en segundo plano (headless) sin exponer puertos.
     * **Optimización de Logs:** Se configuró la rotación de logs de Docker (`max-size: "10m"`, `max-file: "3"`) para evitar que la salida de Selenium llene el disco de 30GB con el tiempo.
 
-* **Servicio C: Web de Monitoreo**
+* **Servicio D: Web de Monitoreo**
     * **Stack:** Node.js + Express.
     * **Estrategia:** A diferencia de los otros servicios, este agente corre sin Docker gestionado por **PM2**.
     * **Motivo:** Evitar el *overhead* de memoria de un contenedor adicional y facilitar la lectura directa de métricas del Kernel y del socket de Docker.
-
 ## Resultados
 
 El despliegue fue exitoso. El servidor opera 24/7 de manera estable, manejando la carga de trabajo de compilación de Selenium gracias a la gestión de memoria virtual.
