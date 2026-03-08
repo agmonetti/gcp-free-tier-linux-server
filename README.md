@@ -38,11 +38,6 @@ Con 1GB de RAM, el proceso de construcción de la imagen de Docker con Chromium 
 
 Se utiliza un enfoque mixto para maximizar la eficiencia:
 
-* **Servicio A: Landing Page** ([Portfolio](https://agus-monetti.is-a.dev/))
-    * **Stack:** React 19 + Vite + TailwindCSS.
-    * **Despliegue:** Estrategia **Docker Multi-stage**. Se utiliza una imagen de Node.js temporal para compilar el proyecto (aprovechando el Swap) y una imagen final de **Nginx Alpine** para servir los estáticos con mínimo consumo de RAM (<10MB).
-    * **Red:** Expuesto en el **puerto 80** asociado al dominio `is-a.dev`.
-
 * **Servicio B: Memos**
     * [Memos](https://github.com/usememos/memos): Alternativa open-source a Notion, ligera y potente.
     * Expuesto al **puerto 8080** (migrado para liberar el puerto principal).
