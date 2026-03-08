@@ -38,22 +38,22 @@ Con 1GB de RAM, el proceso de construcción de la imagen de Docker con Chromium 
 
 Se utiliza un enfoque mixto para maximizar la eficiencia:
 
-* **Servicio B: Memos**
+* **Servicio A: Memos**
     * [Memos](https://github.com/usememos/memos): Alternativa open-source a Notion, ligera y potente.
     * Expuesto al **puerto 8080** (migrado para liberar el puerto principal).
     * Datos persistentes en volumen de Docker.
 
-* **Servicio C: Subte Alerta** ([Bot](https://github.com/agmonetti/Bot_Subte))
+* **Servicio B: Subte Alerta** ([Bot](https://github.com/agmonetti/Bot_Subte))
     * Bot de Python que monitorea el estado del subte de Buenos Aires vía web scraping (Selenium) y notifica por Telegram.
     * Se ejecuta en segundo plano (headless) sin exponer puertos.
     * **Optimización de Logs:** Se configuró la rotación de logs de Docker (`max-size: "10m"`, `max-file: "3"`) para evitar que la salida de Selenium llene el disco de 30GB con el tiempo.
 
-* **Servicio D: Web de Monitoreo**
+* **Servicio C: Web de Monitoreo**
     * **Stack:** Node.js + Express.
     * **Estrategia:** A diferencia de los otros servicios, este agente corre sin Docker gestionado por **PM2**.
     * **Motivo:** Evitar el *overhead* de memoria de un contenedor adicional y facilitar la lectura directa de métricas del Kernel y del socket de Docker.
  
- * **Servicio E: Speech to Text** ([Bot](https://github.com/agmonetti/speech-to-Memos))
+ * **Servicio D: Speech to Text** ([Bot](https://github.com/agmonetti/speech-to-Memos))
     * Bot desarrollado en Python (v3.11+) que procesa notas de voz de Telegram y las integra con las APIs de Google Cloud.
     * **Seguridad de Credenciales**: Para no comprometer la seguridad ni "quemar" claves en la imagen de Docker, el archivo credentials.json se inyecta dinámicamente en tiempo de ejecución mediante volúmenes (Bind Mounts) y se vincula usando la variable de entorno GOOGLE_APPLICATION_CREDENTIALS.
     * **Disponibilidad**: Contenedor aislado con reinicio automático (restart: always) para garantizar alta disponibilidad del bot sin intervención manual.
